@@ -18,6 +18,7 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
   let originalParent: HTMLElement | null = null
   let originalStyles: Partial<CSSStyleDeclaration> = {} // 新增：用于保存原有样式
   let initialRect: DOMRect // 新增：用于保存元素初始位置和尺寸
+  let placeholderElement: HTMLElement | null = null // 新增：用于保存虚拟占位元素
 
   const container = mergedOptions.container || document.body
 
@@ -48,6 +49,15 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
     const rect = targetElement.getBoundingClientRect()
     initialRect = rect // 保存初始位置和尺寸
     originalParent = targetElement.parentNode as HTMLElement
+
+    // 创建虚拟占位元素
+    placeholderElement = document.createElement('div')
+    placeholderElement.style.position = 'relative'
+    placeholderElement.style.width = `${rect.width}px`
+    placeholderElement.style.height = `${rect.height}px`
+    placeholderElement.style.visibility = 'hidden' // 隐藏占位元素，避免影响布局
+    originalParent.insertBefore(placeholderElement, targetElement)
+
     container.appendChild(targetElement)
 
     if (mergedOptions.enableAnimation) {
@@ -108,6 +118,10 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
             originalParent.appendChild(targetElement)
           }
           restoreOriginalStyles() // 调用公共方法还原样式
+          // 移除虚拟占位元素
+          if (placeholderElement?.parentNode) {
+            placeholderElement.parentNode.removeChild(placeholderElement)
+          }
         }, 300)
       })
     } else {
@@ -115,6 +129,10 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
         originalParent.appendChild(targetElement)
       }
       restoreOriginalStyles() // 调用公共方法还原样式
+      // 移除虚拟占位元素
+      if (placeholderElement?.parentNode) {
+        placeholderElement.parentNode.removeChild(placeholderElement)
+      }
     }
     isFullscreen = false
     mergedOptions.onChange?.(false)
