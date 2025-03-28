@@ -53,6 +53,9 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
     // 获取container
     const container = typeof mergedOptions.container === 'function' ? mergedOptions.container() : mergedOptions.container
 
+    // 使用 getComputedStyle 获取计算后的样式
+    const computedStyle = window.getComputedStyle(targetElement)
+
     // 保存原有样式
     originalStyles = {
       position: targetElement.style.position,
@@ -60,7 +63,12 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
       left: targetElement.style.left,
       width: targetElement.style.width,
       height: targetElement.style.height,
-      zIndex: targetElement.style.zIndex
+      zIndex: targetElement.style.zIndex,
+      margin: computedStyle.margin, // 使用 getComputedStyle 获取 margin
+      marginTop: computedStyle.marginTop, // 新增：保存 margin-top
+      marginRight: computedStyle.marginRight, // 新增：保存 margin-right
+      marginBottom: computedStyle.marginBottom, // 新增：保存 margin-bottom
+      marginLeft: computedStyle.marginLeft // 新增：保存 margin-left
     }
 
     // 获取元素当前在屏幕中的位置和尺寸
@@ -73,10 +81,18 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
     placeholderElement.style.position = 'relative'
     placeholderElement.style.width = `${rect.width}px`
     placeholderElement.style.height = `${rect.height}px`
+    placeholderElement.style.margin = computedStyle.margin // 新增：设置 margin
+    placeholderElement.style.marginTop = computedStyle.marginTop // 新增：设置 margin-top
+    placeholderElement.style.marginRight = computedStyle.marginRight // 新增：设置 margin-right
+    placeholderElement.style.marginBottom = computedStyle.marginBottom // 新增：设置 margin-bottom
+    placeholderElement.style.marginLeft = computedStyle.marginLeft // 新增：设置 margin-left
     placeholderElement.style.visibility = 'hidden' // 隐藏占位元素，避免影响布局
     originalParent.insertBefore(placeholderElement, targetElement)
 
     container.appendChild(targetElement)
+
+    // 新增：临时设置margin为0
+    targetElement.style.margin = '0'
 
     if (mergedOptions.enableAnimation) {
       targetElement.style.transition = 'all 300ms ease'
@@ -109,6 +125,11 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
     targetElement.style.width = originalStyles.width || ''
     targetElement.style.height = originalStyles.height || ''
     targetElement.style.zIndex = originalStyles.zIndex || ''
+    targetElement.style.margin = originalStyles.margin || '' // 还原原有 margin
+    targetElement.style.marginTop = originalStyles.marginTop || '' // 新增：还原 margin-top
+    targetElement.style.marginRight = originalStyles.marginRight || '' // 新增：还原 margin-right
+    targetElement.style.marginBottom = originalStyles.marginBottom || '' // 新增：还原 margin-bottom
+    targetElement.style.marginLeft = originalStyles.marginLeft || '' // 新增：还原 margin-left
   }
 
   // 退出全屏
