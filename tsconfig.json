@@ -21,20 +21,20 @@
     "src/*.ts",
     "src/**/*.ts",
     "src/**/*.vue",
-    "src/*.vue",
     "tsconfig.json",
     ".eslintrc.js",
     "test/*.ts",
+    "test/**/*.ts",
     "*.ts"
   ],
   "exclude": [
     "node_modules",
     "tests/server/**/*.ts",
     "dist",
-    "src/*.ts",
-    "src/**/*.ts",
-    "src/**/*.vue",
-    "src/*.vue",
+    //    "src/*.ts",
+    //    "src/**/*.ts",
+    //    "src/**/*.vue",
+    //    "src/*.vue",
     "vite.config.ts"
   ]
 }
