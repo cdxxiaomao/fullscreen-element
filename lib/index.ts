@@ -3,7 +3,7 @@
  * @param element 可以是Element节点或#开头的字符串
  * @param options 配置项，包含container属性，用于指定全屏时挂载的节点，onChange事件回调，以及defaultFullscreen用于指定初始是否全屏
  */
-export function fullscreenElement (element: HTMLElement | string, options: { container?: HTMLElement, onChange?: (isFullscreen: boolean) => void, defaultFullscreen?: boolean, enableAnimation?: boolean } = {}) {
+export function fullscreenElement (element: HTMLElement | string, options: { container?: HTMLElement | (() => HTMLElement), onChange?: (isFullscreen: boolean) => void, defaultFullscreen?: boolean, enableAnimation?: boolean } = {}) {
   // 合并默认值
   const mergedOptions = {
     container: document.body,
@@ -20,8 +20,6 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
   let initialRect: DOMRect // 新增：用于保存元素初始位置和尺寸
   let placeholderElement: HTMLElement | null = null // 新增：用于保存虚拟占位元素
 
-  const container = mergedOptions.container || document.body
-
   // 进入全屏
   const enterFullscreen = () => {
     if (typeof element === 'string' && element.startsWith('#')) {
@@ -34,6 +32,9 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
       console.error('Element not found')
       return () => {}
     }
+
+    // 获取container
+    const container = typeof mergedOptions.container === 'function' ? mergedOptions.container() : mergedOptions.container
 
     // 保存原有样式
     originalStyles = {
@@ -72,19 +73,38 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
 
       // 使用requestAnimationFrame确保样式更新
       requestAnimationFrame(() => {
-        // 再放大至全屏
+        // 如果配置了container，调整至container的位置和尺寸
+        if (mergedOptions.container) {
+          const containerRect = container.getBoundingClientRect()
+          targetElement.style.top = `${containerRect.top}px`
+          targetElement.style.left = `${containerRect.left}px`
+          targetElement.style.width = `${containerRect.width}px`
+          targetElement.style.height = `${containerRect.height}px`
+        } else {
+          // 如果没有配置container，保持原有位置和尺寸
+          targetElement.style.top = '0'
+          targetElement.style.left = '0'
+          targetElement.style.width = '100%'
+          targetElement.style.height = '100%'
+        }
+      })
+    } else {
+      targetElement.style.position = 'fixed'
+      targetElement.style.zIndex = '1000'
+      // 如果配置了container，调整至container的位置和尺寸
+      if (options.container) {
+        const containerRect = container.getBoundingClientRect()
+        targetElement.style.top = `${containerRect.top}px`
+        targetElement.style.left = `${containerRect.left}px`
+        targetElement.style.width = `${containerRect.width}px`
+        targetElement.style.height = `${containerRect.height}px`
+      } else {
+        // 如果没有配置container，保持原有位置和尺寸
         targetElement.style.top = '0'
         targetElement.style.left = '0'
         targetElement.style.width = '100%'
         targetElement.style.height = '100%'
-      })
-    } else {
-      targetElement.style.position = 'fixed'
-      targetElement.style.top = '0'
-      targetElement.style.left = '0'
-      targetElement.style.width = '100%'
-      targetElement.style.height = '100%'
-      targetElement.style.zIndex = '1000'
+      }
     }
     isFullscreen = true
     mergedOptions.onChange?.(true)
