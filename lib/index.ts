@@ -20,6 +20,23 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
   let initialRect: DOMRect // 新增：用于保存元素初始位置和尺寸
   let placeholderElement: HTMLElement | null = null // 新增：用于保存虚拟占位元素
 
+  // 新增：调整元素位置和尺寸的公共方法
+  const adjustElementPositionAndSize = (container: HTMLElement) => {
+    if (options.container) {
+      const containerRect = container.getBoundingClientRect()
+      targetElement.style.top = `${containerRect.top}px`
+      targetElement.style.left = `${containerRect.left}px`
+      targetElement.style.width = `${containerRect.width}px`
+      targetElement.style.height = `${containerRect.height}px`
+    } else {
+      // 如果没有配置container，保持原有位置和尺寸
+      targetElement.style.top = '0'
+      targetElement.style.left = '0'
+      targetElement.style.width = '100%'
+      targetElement.style.height = '100%'
+    }
+  }
+
   // 进入全屏
   const enterFullscreen = () => {
     if (typeof element === 'string' && element.startsWith('#')) {
@@ -73,38 +90,12 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
 
       // 使用requestAnimationFrame确保样式更新
       requestAnimationFrame(() => {
-        // 如果配置了container，调整至container的位置和尺寸
-        if (mergedOptions.container) {
-          const containerRect = container.getBoundingClientRect()
-          targetElement.style.top = `${containerRect.top}px`
-          targetElement.style.left = `${containerRect.left}px`
-          targetElement.style.width = `${containerRect.width}px`
-          targetElement.style.height = `${containerRect.height}px`
-        } else {
-          // 如果没有配置container，保持原有位置和尺寸
-          targetElement.style.top = '0'
-          targetElement.style.left = '0'
-          targetElement.style.width = '100%'
-          targetElement.style.height = '100%'
-        }
+        adjustElementPositionAndSize(container) // 调用公共方法调整位置和尺寸
       })
     } else {
       targetElement.style.position = 'fixed'
       targetElement.style.zIndex = '1000'
-      // 如果配置了container，调整至container的位置和尺寸
-      if (options.container) {
-        const containerRect = container.getBoundingClientRect()
-        targetElement.style.top = `${containerRect.top}px`
-        targetElement.style.left = `${containerRect.left}px`
-        targetElement.style.width = `${containerRect.width}px`
-        targetElement.style.height = `${containerRect.height}px`
-      } else {
-        // 如果没有配置container，保持原有位置和尺寸
-        targetElement.style.top = '0'
-        targetElement.style.left = '0'
-        targetElement.style.width = '100%'
-        targetElement.style.height = '100%'
-      }
+      adjustElementPositionAndSize(container) // 调用公共方法调整位置和尺寸
     }
     isFullscreen = true
     mergedOptions.onChange?.(true)
