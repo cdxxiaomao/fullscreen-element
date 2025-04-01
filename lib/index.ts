@@ -179,6 +179,10 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
     })
   }
 
+  /**
+   * 全屏与取消全屏切换
+   * @param type {String} 'enter' | 'exit'
+   */
   function toggle (type?: 'enter' | 'exit') {
     if (isFullscreen && ((type ?? 'exit') === 'exit')) {
       exitFullscreen()
@@ -187,8 +191,16 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
     }
   }
 
+  /**
+   * 获取是否全屏状态
+   */
+  function getIsFullscreen () {
+    return isFullscreen
+  }
+
   // 返回包含切换全屏方法的对象
   return {
-    toggle
+    toggle,
+    getIsFullscreen
   }
 }
