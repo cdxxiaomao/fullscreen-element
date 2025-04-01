@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2](https://github.com/cdxxiaomao/fullscreen-element/compare/v0.0.1...v0.0.2) (2025-04-01)
+
+
+### Features
+
+* toggle方法增加type可选参数 ([ce7a7c7](https://github.com/cdxxiaomao/fullscreen-element/commit/ce7a7c7b5c4833cefdd4c727dd682bde4866dcbf))
+
 ### [0.0.1](https://github.com/cdxxiaomao/fullscreen-element/compare/v1.0.0...v0.0.1) (2025-03-28)
 
 
