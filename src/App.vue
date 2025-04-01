@@ -16,7 +16,7 @@
       style="border: 1px solid #e1e1e1; box-sizing: border-box; margin-top: 10px; background: #f5f5f5; padding: 10px; position: relative ; left: 30%; width: 200px"
     >
       全屏内容
-      <button @click="toggle">
+      <button @click="toggle()">
         切换全屏
       </button>
 
@@ -40,6 +40,15 @@ const { toggle } = fullscreenElement('#screenEl', {
   // defaultFullscreen: true
   // enableAnimation: false
 })
+
+setTimeout(() => {
+  toggle('exit')
+  console.log('退出全屏')
+  setTimeout(() => {
+    console.log('全屏')
+    toggle('enter')
+  }, 3000)
+}, 3000)
 
 const { toggle: toggle1 } = fullscreenElement('#screenEl1', {
   // defaultFullscreen: true,
