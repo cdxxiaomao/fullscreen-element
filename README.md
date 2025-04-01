@@ -39,3 +39,11 @@ fullscreenElement<HTMLElement | string, Options>
 | onChange | - | `(isFullscreen: boolean) => void` | 事件回调 |
 | defaultFullscreen | `false` | `boolean` | 初始是否全屏 |
 | enableAnimation | `true` | boolean | 启用动画 |
+
+## Methods
+
+| 参数            | 类型                              | 描述                 |
+| --------------- | --------------------------------- | -------------------- |
+| toggle          | `(type?: 'enter' | 'exit')=>void` | 切换全屏状态         |
+| getIsFullscreen | `()=>boolena`                     | 获取当前是否全屏状态 |
+
