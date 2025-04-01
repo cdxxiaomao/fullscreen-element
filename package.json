@@ -1,6 +1,6 @@
 {
   "name": "fullscreen-element",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "一个用于将指定元素全屏显示的 TypeScript 库。",
   "main": "dist/index.es.js",
   "module": "dist/index.es.js",
