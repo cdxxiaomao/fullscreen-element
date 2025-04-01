@@ -179,10 +179,10 @@ export function fullscreenElement (element: HTMLElement | string, options: { con
     })
   }
 
-  function toggle () {
-    if (isFullscreen) {
+  function toggle (type?: 'enter' | 'exit') {
+    if (isFullscreen && ((type ?? 'exit') === 'exit')) {
       exitFullscreen()
-    } else {
+    } else if (!isFullscreen && (type ?? 'enter') === 'enter') {
       enterFullscreen()
     }
   }
